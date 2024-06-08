@@ -39,6 +39,7 @@ void searchAndUpdateBorrowersMenu();
 void searchBorrowers();
 void updateBorrowers();
 void issuseAndReturnBooks();
+void showAllBookDetails(); // new function
 void issueBooks(string bookID, string borrowerID, int currentBorrowLimit);
 void acceptReturnedBooks(string bookID, string borrowerID, int currentBorrowLimit);
 
@@ -470,7 +471,9 @@ void librarianMenu()
 	SetConsoleTextAttribute(hConsole, 11);
 	cout << "\t\t\t\t** \t[5] SEARCH AND UPDATE BORROWERS       **\n";
 	SetConsoleTextAttribute(hConsole, 11);
-	cout << "\t\t\t\t** \t[6] MAIN MENU                         **\n";
+	cout << "\t\t\t\t** \t[6] SHOW ALL BOOK DETAILS             **\n";
+	SetConsoleTextAttribute(hConsole, 11);
+	cout << "\t\t\t\t** \t[7] MAIN MENU                         **\n";
 	SetConsoleTextAttribute(hConsole, 15); 
 	cout << "\t\t\t\t------------------------------------------------\n";
 	cout << "\t\t\t\t************************************************\n";	
@@ -510,6 +513,10 @@ void librarianMenu()
 			searchAndUpdateBorrowersMenu();
 		}
 		case 6:{
+			system("cls");
+			showAllBookDetails();
+		}
+		case 7:{
 			system("cls");
 			main();
 		}
@@ -1102,6 +1109,7 @@ void createLibLogin()
 		{
 		    std::cout << ' ';
 		}
+		
 		SetConsoleTextAttribute(hConsole, 0x2F); 
 		cout << "Librarian Does not Exist in the system\n";
 		SetConsoleTextAttribute(hConsole, 7);
@@ -1114,9 +1122,38 @@ void createLibLogin()
 		
 		cout << "\t\t\t\t Email\t\t: ";
 		cin  >> email;
-					
-		cout << "\t\t\t\t Phone Number\t: ";
-		cin  >> phoneNumber;
+	
+	    // Modified part
+	
+		while(true)
+		{
+			cout << "\t\t\t\t Phone Number\t: ";
+			cin  >> phoneNumber;
+			
+			if(phoneNumber.length() != 10)
+			{
+				for (int i = 0; i < 32; ++i) 
+				{
+		        	std::cout << ' ';
+		    	}
+				SetConsoleTextAttribute(hConsole, 0x4F); 
+				cout << "PHONE NUMBER MUST HAVE 10 DIGITS\n";
+				SetConsoleTextAttribute(hConsole, 0x37);
+				SetConsoleTextAttribute(hConsole, 0x37);
+				cout << "\t\t\t\tPRESS ANY KEY TO RETURN TO RE-ENTER THE PHONE NUMBER...";
+				SetConsoleTextAttribute(hConsole, 0x7);
+				getch();
+				system("cls");
+				cout << "\t\t\t\t------------------------------------------------\n";
+				cout << "\t\t\t\t\t   Librarian Registration Form\n";
+				cout << "\t\t\t\t Full Name\t: " << libName << endl;
+				cout << "\t\t\t\t Email\t\t: " << email << endl;
+				
+				continue;
+			}
+			break;
+			
+		}
 					
 					
 		cout << "\t\t\t\t------------------------------------------------\n";
@@ -1149,6 +1186,7 @@ void createLibLogin()
 				SetConsoleTextAttribute(hConsole, 0x37);
 				cout << "\t\t\t\tPRESS ANY KEY TO RETURN TO RE-ENTER THE PASSWORD...\n";
 				SetConsoleTextAttribute(hConsole, 0x7);
+				getch();
 				continue;
 			}
 		}
@@ -3832,4 +3870,68 @@ void acceptReturnedBooks(string bookID, string borrowerid, int currentBorrowLimi
 	getch(); 
 	system("cls");
 	issuseAndReturnBooks();	
+}
+
+// modified part
+
+void showAllBookDetails()
+{
+	int bookCount = 0;
+	// Return books 
+	SetConsoleTextAttribute(hConsole, 14);
+	cout << "\t\t\t\t\t======================\n";
+	cout << "\t\t\t\t\t|| VIEW | ALL BOOKS ||\n";
+	cout << "\t\t\t\t\t======================\n";
+	SetConsoleTextAttribute(hConsole, 7);
+
+
+	fstream showBook;
+	showBook.open("book.dat", ios::in);
+	
+	string line;
+	while(getline(showBook, line))
+	{
+		istringstream ss(line);
+		string bID,title,author,publisher,genre,price,availability;
+		getline(ss, bID, '|');
+		getline(ss, title, '|');
+		getline(ss, author, '|');
+		getline(ss, publisher, '|');
+		getline(ss, genre, '|');
+		getline(ss, price, '|');
+		getline(ss, availability, '|');
+		
+		cout << "\t\t\t\tBook ID\t\t: " << bID << endl;
+		cout << "\t\t\t\tTitle\t\t: " << title << endl;
+		cout << "\t\t\t\tAuthor\t\t: " << author << endl;
+		cout << "\t\t\t\tPublisher\t: " << publisher << endl;
+		cout << "\t\t\t\tGenre\t\t: " << genre << endl;
+		cout << "\t\t\t\tPrice\t\t: " << price << endl;
+		cout << "\t\t\t\tAvailability\t: " << availability << endl;
+		cout << "\t\t\t\t----------------------------------------------" << endl;
+		
+		bookCount += 1;
+			
+	}
+	
+	cout << "\t\t\t\t----------------------------------------------" << endl;
+	cout << "\t\t\t\tTotla Book Count: " << bookCount << endl;
+	cout << "\t\t\t\t----------------------------------------------" << endl;
+	
+	for (int i = 0; i < 32; ++i) 
+	{
+    	std::cout << ' ';
+	}
+	
+	SetConsoleTextAttribute(hConsole, 0x2F);
+	std::cout << "SEARCH COMPLETED";
+	SetConsoleTextAttribute(hConsole, 7);
+	cout << "\n";
+	SetConsoleTextAttribute(hConsole, 0x97);
+	cout << "\t\t\t\tPLEASE ENTER ANY KEY TO RETUNRN TO LIBRARIN MENU.....";
+	SetConsoleTextAttribute(hConsole, 7);
+	getch();
+	system("cls");
+	librarianMenu();
+	
 }
